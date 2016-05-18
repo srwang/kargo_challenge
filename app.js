@@ -9,41 +9,56 @@ app.use(urlencodedBodyParser);
 app.set('view_engine', 'ejs');
 app.use(express.static('public'));
 
-//routes
 app.get('/', function (req, res){
-	//pull top three reddit threads
+	res.render('main.html.ejs');
+})
+
+function getThreadData(index, response) {
+	//grab top three on r/all
 	request.get('https://www.reddit.com/r/all.json?limit=3', function (err, data, body) {
+
 		if (err) console.log(err);
-		var jsonReddit = JSON.parse(body),
-			listings = [];
+		var threadsData = JSON.parse(body).data.children;
 
-		jsonReddit.data.children.forEach(function(listing){
-			//use thread id (listing.data.id) to grab top comment for that thread
-			request.get('https://www.reddit.com/r/all/comments/' + listing.data.id + '.json?limit=1', function (err, data, body) {
-				if (err) console.log(err);
+		//find specific thread based on rank from top
+		request.get('https://www.reddit.com/r/all/comments/' + threadsData[index].data.id + '.json?limit=1', function (err, data, body) {
 
-				//console.log(JSON.parse(body)[0]);
-				var topComment = JSON.parse(body)[1].data.children[0].data.body;
-				//cut down to first 100 characters
-				topComment = topComment.slice(0, 99);
+			if (err) console.log(err);
 
-				listing.data.comment = topComment;
-				
-			});
+			console.log(JSON.parse(body))
 
-			listing.num_comments = listing.num_comments - 1;
-			listings.push(listing.data);
+			//grab thread meta-data
+			var threadData = JSON.parse(body)[0].data.children[0].data;
+			//change num_comments to number of additional comments
+			threadData.num_comments = threadData.num_comments - 1;
+			if(threadData.num_comments === NaN) threadData.num_comments = 0;
+			
+			if (threadData.url.indexOf('imgur') === -1) threadData.thumbnail = '';
+
+			//grab top comment
+			var topComment = JSON.parse(body)[1].data.children[0].data.body;
+			//cut down to first 100 characters
+			topComment = topComment.slice(0, 99);
+			//attach comment to same object as metadata
+			threadData.comment = topComment;
+			
+			console.log(threadData);
+			//send as json to route
+			response.status(200).send({threadData: threadData});
 		});
 
-		//send to template
-		res.render('main.html.ejs', {listings: listings});
 	});
-});
+}
 
-//get separate datas/comments
-//send the message to the client-side
-//append html
-
+//index is article rank from top
+for (var index = 0; index <= 2; index++) {
+	//front-end will get from these routes- so that I can send data from three requests to same view
+	(function(index){
+		app.get('/article' + index, function (request, response) {
+			getThreadData(index, response);
+		});
+	})(index);
+}
 
 //server
 app.get('*', function(req, res, next) {
