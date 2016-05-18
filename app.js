@@ -25,8 +25,6 @@ function getThreadData(index, response) {
 
 			if (err) console.log(err);
 
-			console.log(JSON.parse(body))
-
 			//grab thread meta-data
 			var threadData = JSON.parse(body)[0].data.children[0].data;
 			//change num_comments to number of additional comments
