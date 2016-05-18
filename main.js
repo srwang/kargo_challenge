@@ -1,31 +1,30 @@
-console.log('linked');
+$(document).ready(function(){
+	console.log('linked');
 
-var CLIENT_ID = 'sharenren';
+	// $('#load-more').click(function(){
+	// 	// if hidden article exist on the page, load the first group
+	// 	if($('.hidden-rows')[0]) {
 
-function randomString() {
-    var S4 = function() {
-       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-    };
-    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
-}
+	// 		var rows = $('.hidden-rows')[0];
 
-var str = randomString();
-console.log(str);
+	// 		rows.style.display = 'table-row-group';
+	// 		rows.classList.remove('hidden-rows');
+	// 		rows.classList.add('visible-rows');								
+	// 	//else make call to more-articles.json, append to dom	
+	// 	} else {
+	// 		//grab ejs template
+	// 		$.get('templates/table.html.ejs', function (template) {
 
-$.get('https://www.reddit.com/api/v1/authorize?client_id=CLIENT_ID&response_type=code&state=' + str + '&redirect_uri=http://localhost:3000/&duration=permanent&scope=read', function (res) {
-	console.log(res);
-	$('body').innerHtml = res;
+	// 			var temp = ejs.compile(template);
+
+	// 			var request = $.get('/loadmorearticles', function (res) {
+	// 	           //pass response into template
+	// 	           var html = temp(res);
+	// 	           $('#policymic-forum').append(html);
+	// 	        });
+	// 		});
+	// 	}
+	// });
+
+
 });
-
-// $.get('https://www.reddit.com/api/v1/authorize?client_id=CLIENT_ID&response_type=code&state=' + str + '&redirect_uri=http://localhost:3000/&duration=permanent&scope=read', function (data) {
-//     	console.log(data);
-//     });
-
-// $.get('http://www.reddit.com/r/all/new?limit=3', function (data){
-// 	console.log(data);
-// })
-
-
-//routes
-//landing: will print out the html from reddit
-//redirect to page with the printed top 3

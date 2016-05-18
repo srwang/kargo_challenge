@@ -1,0 +1,35 @@
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both; }
+
+body {
+  padding: 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: lighter; }
+  body h1 {
+    margin-bottom: 50px; }
+  body .thread-container {
+    border: 1px solid #777575;
+    float: left;
+    width: 29%;
+    padding: 15px;
+    margin-right: 3%; }
+    body .thread-container a {
+      float: left;
+      margin-bottom: 10px; }
+    body .thread-container img {
+      float: left;
+      clear: both;
+      margin-bottom: 25px; }
+    body .thread-container p {
+      clear: both; }
+    body .thread-container #comments-count {
+      color: gray;
+      margin-top: 30px; }
+  body .thread-container:nth-child(even) {
+    border: 1px solid #9A9393; }
+  body .thread-container:last-child {
+    margin-right: 0; }
+
+/*# sourceMappingURL=main.css.map */

@@ -3,30 +3,49 @@ var app = express();
 var request = require('request');
 var bodyParser = require('body-parser');
 var urlencodedBodyParser = bodyParser.urlencoded({extended: false});
+var ejs = require('ejs');
 
 app.use(urlencodedBodyParser);
+app.set('view_engine', 'ejs');
+app.use(express.static('public'));
 
-//generate unique string for oauth authentification
-function randomString() {
-    var S4 = function() {
-       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-    };
-    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
-}
-var CLIENT_ID = 'h0ZkcDYV3yl0LA',
-	str = randomString();
-
+//routes
 app.get('/', function (req, res){
-	request.get('https://www.reddit.com/api/v1/authorize?client_id=CLIENT_ID&response_type=code&state=' + str + '&redirect_uri=http://localhost:3000/&duration=permanent&scope=read', function (err, data, body) {
-			res.send(body);
+	//pull top three reddit threads
+	request.get('https://www.reddit.com/r/all.json?limit=3', function (err, data, body) {
+		if (err) console.log(err);
+		var jsonReddit = JSON.parse(body),
+			listings = [];
+
+		jsonReddit.data.children.forEach(function(listing){
+			//use thread id (listing.data.id) to grab top comment for that thread
+			request.get('https://www.reddit.com/r/all/comments/' + listing.data.id + '.json?limit=1', function (err, data, body) {
+				if (err) console.log(err);
+
+				//console.log(JSON.parse(body)[0]);
+				var topComment = JSON.parse(body)[1].data.children[0].data.body;
+				//cut down to first 100 characters
+				topComment = topComment.slice(0, 99);
+
+				listing.data.comment = topComment;
+				
+			});
+
+			listing.num_comments = listing.num_comments - 1;
+			listings.push(listing.data);
+		});
+
+		//send to template
+		res.render('main.html.ejs', {listings: listings});
 	});
 });
 
-// request.post('https://www.reddit.com/api/v1/access_token', 'grant_type=https://oauth.reddit.com/grants/installed_client&device_id=' + randomString(), function (err, res, body){
-// 	if (err) console.log(err);
-// 	console.log(body);
-// });
+//get separate datas/comments
+//send the message to the client-side
+//append html
 
+
+//server
 app.get('*', function(req, res, next) {
   var err = new Error();
   err.status = 404;

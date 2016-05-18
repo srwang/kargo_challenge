@@ -1,0 +1,55 @@
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+body {
+	padding: 20px;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: lighter;
+
+	h1 {
+		margin-bottom: 50px;
+	}
+
+	.thread-container {
+		border: 1px solid #777575;
+		float: left;
+		width: 29%;
+		padding: 15px;
+		margin-right: 3%;	
+
+		a {
+			float: left;
+			margin-bottom: 10px;
+		}
+
+		img {
+			float: left;
+			clear: both;
+			margin-bottom: 25px;
+		}
+
+		p {
+			clear: both;
+		}
+
+		#comments-count {
+			color: gray;
+			margin-top: 30px;
+		}
+	}
+
+	.thread-container:nth-child(even) {
+		border: 1px solid #9A9393;
+	}
+
+	.thread-container:last-child {
+		margin-right: 0;
+	}
+}
+
+
+
+

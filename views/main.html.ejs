@@ -1,0 +1,24 @@
+<DOCTYPE html>
+<html>
+	<head>
+		<title>Reddit Threads</title>
+		<link rel="stylesheet" href="http://localhost:3000/css/main.css">
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	</head>
+	<body>
+		<h1>Reddit Headlines</h1>
+		<%listings.forEach(function(listing){%>
+			<div class="thread-container">
+				<h3><%=listing.ups%> <%=listing.title%></h3>
+				<a href="https://www.reddit.com/<%=listing.permalink%>">Link To Thread</a>
+				<%if (listing.url.indexOf('imgur') !== -1){%>
+					<img src="<%=listing.thumbnail%>">
+				<%}else{%>
+					<img src=""></img>
+				<%}%>
+				<p><%=listing.comment%> ...</p>
+				<p id="comments-count">And <%=listing.num_comments%> More</p>
+			</div>
+		<%});%>
+	<body>
+</html>
